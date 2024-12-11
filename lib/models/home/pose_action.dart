@@ -1,6 +1,7 @@
 enum PoseType {
   squat,
-  pushUp;
+  pushUp,
+  unknown;
 
   String get name {
     switch (this) {
@@ -16,8 +17,8 @@ enum PoseType {
 
 class PoseAction {
   final PoseType type;
-  final int done;
-  final int total;
+  int done;
+  int total;
 
   PoseAction({
     required this.type,

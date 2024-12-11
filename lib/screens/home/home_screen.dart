@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:one_fit_man/bloc/home/home_bloc.dart';
 import 'package:one_fit_man/bloc/home/home_state.dart';
 import 'package:one_fit_man/repositories/home/home_repository.dart';
+import 'package:one_fit_man/screens/pose/pose_screen.dart';
 import 'package:one_fit_man/widgets/home/pose_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -30,10 +31,23 @@ class _HomeScreenState extends State<HomeScreen> {
             }
             return Column(
               children: [
-                PoseWidget(poseAction: state.squat, onStart: () {}),
+                PoseWidget(
+                  poseAction: state.squat,
+                  onStart: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return PoseScreen(poseAction: state.squat);
+                    }));
+                  },
+                ),
                 PoseWidget(
                   poseAction: state.pushUp,
-                  onStart: () {},
+                  onStart: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return PoseScreen(poseAction: state.pushUp);
+                    }));
+                  },
                 ),
               ],
             );
