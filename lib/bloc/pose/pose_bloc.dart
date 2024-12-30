@@ -25,22 +25,28 @@ class PoseBloc extends Bloc<PoseEvent, PoseState> {
         await permissionRepository.requestPermission(PermissionType.camera);
     emit(PoseState(
         poseAction: event.poseAction,
-        cameraPermissionState: permission.permissionState));
+        cameraPermissionState: permission.permissionState,
+        lastPoseUpdated: DateTime.now()));
   }
 
   Future<void> _onPoseProcessPosesEvent(
       PoseProcessPosesEvent event, Emitter<PoseState> emit) async {
-    final didCount = state.poseAction?.type == PoseType.squat
-        ? await poseRepository.countAsSquat(event.poses)
-        : await poseRepository.countAsPushUp(event.poses);
+    final poseResult = state.poseAction?.type == PoseType.squat
+        ? await poseRepository.countAsSquat(
+            event.poses, state.lastPoseUpdated ?? DateTime.now())
+        : await poseRepository.countAsPushUp(
+            event.poses, state.lastPoseUpdated ?? DateTime.now());
 
-    if (didCount) {
+    if (poseResult.didCount) {
       state.poseAction?.done++;
     }
 
+    print('PoseResult: ${poseResult.didCount} - ${poseResult.lastPoseUpdated}');
+
     emit(PoseProcessedState(
-        didCount: didCount,
+        didCount: poseResult.didCount,
         poseAction: state.poseAction,
-        cameraPermissionState: state.cameraPermissionState));
+        cameraPermissionState: state.cameraPermissionState,
+        lastPoseUpdated: poseResult.lastPoseUpdated));
   }
 }

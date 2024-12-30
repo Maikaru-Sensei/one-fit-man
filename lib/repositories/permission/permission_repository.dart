@@ -13,7 +13,8 @@ class PermissionRepository {
   Future<PermissionResult> checkPermission(
       PermissionType permissionType) async {
     final status = switch (permissionType) {
-      PermissionType.camera => await Permission.camera.status
+      PermissionType.camera => await Permission.camera.status,
+      PermissionType.location => await Permission.location.status
     };
 
     return PermissionResult(
@@ -24,7 +25,8 @@ class PermissionRepository {
   Future<PermissionResult> requestPermission(
       PermissionType permissionType) async {
     final status = switch (permissionType) {
-      PermissionType.camera => await Permission.camera.request()
+      PermissionType.camera => await Permission.camera.request(),
+      PermissionType.location => await Permission.location.request()
     };
 
     return PermissionResult(

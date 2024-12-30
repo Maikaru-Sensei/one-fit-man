@@ -1,6 +1,8 @@
 enum PoseType {
   squat,
   pushUp,
+  sitUp,
+  running,
   unknown;
 
   String get name {
@@ -9,6 +11,10 @@ enum PoseType {
         return 'Squats';
       case PoseType.pushUp:
         return 'Push Ups';
+      case PoseType.sitUp:
+        return 'Sit Ups';
+      case PoseType.running:
+        return 'Running';
       default:
         return '';
     }

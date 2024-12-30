@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +30,17 @@ class _PoseScreenState extends State<PoseScreen> {
   CustomPaint? _customPaint;
   String? _text;
   var _cameraLensDirection = CameraLensDirection.back;
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _audioPlayer.setReleaseMode(ReleaseMode.stop);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _audioPlayer.setSourceAsset('pose_done.wav');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +57,11 @@ class _PoseScreenState extends State<PoseScreen> {
           builder: (context, state) {
             if (state is PoseProcessedState) {
               _isBusy = false;
-            }
 
+              if (state.didCount) {
+                _audioPlayer.resume();
+              }
+            }
             return _poseWidgets(state, context);
           },
         ),
@@ -54,19 +69,10 @@ class _PoseScreenState extends State<PoseScreen> {
     );
   }
 
-  Widget _poseWidgets(PoseState state, BuildContext context) {
-    if (state.cameraPermissionState == PermissionState.denied) {
-      return const Center(
-        child: Text('Permission denied'),
-      );
-    } else if (state.cameraPermissionState == PermissionState.granted) {
-      return _cameraWidget(state, context);
-    }
-
-    return const Center(
-      child: CircularProgressIndicator(),
-    );
-  }
+  Widget _poseWidgets(PoseState state, BuildContext context) =>
+      state.cameraPermissionState == PermissionState.granted
+          ? _cameraWidget(state, context)
+          : const Center(child: CircularProgressIndicator());
 
   Widget _cameraWidget(PoseState state, BuildContext context) {
     return Column(
@@ -121,8 +127,6 @@ class _PoseScreenState extends State<PoseScreen> {
     if (blocContext.mounted) {
       blocContext.read<PoseBloc>().add(PoseProcessPosesEvent(poses: poses));
     }
-
-    _isBusy = false;
     if (mounted) {
       setState(() {});
     }
@@ -132,6 +136,7 @@ class _PoseScreenState extends State<PoseScreen> {
   void dispose() {
     _canProcess = false;
     _poseDetector.close();
+    _audioPlayer.dispose();
     super.dispose();
   }
 }

@@ -10,9 +10,14 @@ class PoseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final poseImage = poseAction?.type == PoseType.squat
-        ? 'assets/pose_squat.png'
-        : 'assets/pose_pushup.png';
+    final poseImage = switch (poseAction?.type) {
+      PoseType.squat => 'assets/pose_squat.png',
+      PoseType.pushUp => 'assets/pose_pushup.png',
+      PoseType.sitUp => 'assets/pose_situp.png',
+      PoseType.running => 'assets/pose_running.png',
+      null => throw UnimplementedError(),
+      PoseType.unknown => throw UnimplementedError(),
+    };
 
     final progressColor = poseAction?.done == poseAction?.total
         ? Colors.green
@@ -38,7 +43,12 @@ class PoseWidget extends StatelessWidget {
                     ),
                   ),
                   child: CircleAvatar(
-                    child: Image.asset(poseImage),
+                    backgroundColor: Colors.grey,
+                    child: Image.asset(
+                      poseImage,
+                      width: 30,
+                      height: 30,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10),

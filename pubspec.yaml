@@ -16,6 +16,11 @@ dependencies:
   google_mlkit_pose_detection: ^0.13.0
   permission_handler: ^11.3.0
   audioplayers: ^6.1.0
+  settings_ui: ^2.0.2
+  highlight_nav_bar: ^1.0.0
+  geolocator: ^10.0.2
+  confetti: ^0.8.0
+  flutter_secure_storage: ^9.2.2
 
 dev_dependencies:
   flutter_test:
@@ -29,3 +34,5 @@ flutter:
      - assets/pose_pushup.png
      - assets/pose_squat.png
      - assets/pose_done.wav
+     - assets/pose_situp.png
+     - assets/pose_running.png

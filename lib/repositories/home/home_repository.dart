@@ -14,4 +14,18 @@ class HomeRepository {
       () => PoseAction(type: PoseType.pushUp, done: 0, total: 10),
     );
   }
+
+  Future<PoseAction> getSitUps() async {
+    return Future.delayed(
+      const Duration(seconds: 1),
+      () => PoseAction(type: PoseType.sitUp, done: 0, total: 10),
+    );
+  }
+
+  Future<PoseAction> getRunning() async {
+    return Future.delayed(
+      const Duration(seconds: 1),
+      () => PoseAction(type: PoseType.running, done: 0, total: 10),
+    );
+  }
 }
