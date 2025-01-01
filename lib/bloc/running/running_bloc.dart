@@ -38,7 +38,7 @@ class RunningBloc extends Bloc<RunningEvent, RunningState> {
         startingPosition: null,
         currentPosition: null,
         locationPermissionState: permission.permissionState,
-        poseAction: PoseAction(type: PoseType.running, done: 0, total: 10),
+        poseAction: PoseAction(type: PoseType.running, done: 0, total: 100),
         speed: 0.0));
   }
 
@@ -65,7 +65,7 @@ class RunningBloc extends Bloc<RunningEvent, RunningState> {
 
   Future<void> _onRunningUpdateEvent(
       RunningUpdateEvent event, Emitter<RunningState> emit) async {
-    await storageRepository.writePoseAction(state.poseAction);
+    await storageRepository.writeDone(state.poseAction);
 
     emit(state.copyWith(
         poseAction: state.poseAction..done = event.distance,
@@ -78,5 +78,11 @@ class RunningBloc extends Bloc<RunningEvent, RunningState> {
       RunningStopEvent event, Emitter<RunningState> emit) async {
     runningRepository.stopPositionUpdates();
     emit(state.copyWith(isRunning: false, speed: 0.0));
+  }
+
+  @override
+  Future<void> close() {
+    runningRepository.positionSubscription?.cancel();
+    return super.close();
   }
 }

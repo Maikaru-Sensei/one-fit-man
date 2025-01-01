@@ -27,3 +27,7 @@ class HomeState {
         running: running ?? this.running);
   }
 }
+
+class HomeLoadingState extends HomeState {
+  HomeLoadingState({super.squat, super.pushUp, super.sitUp, super.running});
+}

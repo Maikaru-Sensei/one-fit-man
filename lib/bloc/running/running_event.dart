@@ -21,7 +21,7 @@ class RunningStopEvent extends RunningEvent {
 class RunningUpdateEvent extends RunningEvent {
   final int distance;
   final double speed;
-  final Position currentPosition;
+  final Position? currentPosition;
 
   RunningUpdateEvent(
       {required this.distance,

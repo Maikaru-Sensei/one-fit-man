@@ -28,7 +28,7 @@ class PoseAction {
 
   PoseAction({
     required this.type,
-    required this.done,
-    required this.total,
+    this.done = 0,
+    this.total = 0,
   });
 }

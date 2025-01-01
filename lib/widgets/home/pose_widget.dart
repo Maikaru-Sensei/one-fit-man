@@ -19,11 +19,11 @@ class PoseWidget extends StatelessWidget {
       PoseType.unknown => throw UnimplementedError(),
     };
 
-    final progressColor = poseAction?.done == poseAction?.total
+    final progressColor = (poseAction?.done ?? 0) >= (poseAction?.total ?? 10)
         ? Colors.green
         : poseAction?.done == 0
-            ? Colors.orange
-            : Colors.yellow;
+            ? Colors.redAccent
+            : Colors.orange;
 
     return Card(
         color: progressColor,

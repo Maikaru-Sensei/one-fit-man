@@ -16,16 +16,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<void> _onHomeFetchEvent(
       HomeFetchEvent event, Emitter<HomeState> emit) async {
-    final squat = await storageRepository
-        .readPoseAction(PoseAction(type: PoseType.squat, done: 0, total: 0));
-    final pushUp = await storageRepository
-        .readPoseAction(PoseAction(type: PoseType.pushUp, done: 0, total: 0));
-    final sitUp = await storageRepository
-        .readPoseAction(PoseAction(type: PoseType.sitUp, done: 0, total: 0));
-    final running = await storageRepository
-        .readPoseAction(PoseAction(type: PoseType.running, done: 0, total: 0));
+    emit(HomeLoadingState());
 
-    emit(state.copyWith(
+    final squat = await storageRepository.readPoseAction(PoseType.squat);
+    final pushUp = await storageRepository.readPoseAction(PoseType.pushUp);
+    final sitUp = await storageRepository.readPoseAction(PoseType.sitUp);
+    final running = await storageRepository.readPoseAction(PoseType.running);
+
+    squat.done = 5;
+    pushUp.done = 3;
+    running.done = 0;
+    running.total = 100;
+
+    emit(HomeState(
         squat: squat, pushUp: pushUp, sitUp: sitUp, running: running));
   }
 }

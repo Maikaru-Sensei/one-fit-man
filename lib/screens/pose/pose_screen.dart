@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:camera/camera.dart';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
@@ -11,6 +12,7 @@ import 'package:one_fit_man/models/permission/permission_state.dart';
 import 'package:one_fit_man/models/pose/pose_painter.dart';
 import 'package:one_fit_man/repositories/permission/permission_repository.dart';
 import 'package:one_fit_man/repositories/pose/pose_repository.dart';
+import 'package:one_fit_man/repositories/storage/storage_repository.dart';
 import 'package:one_fit_man/screens/pose/detector_view.dart';
 
 class PoseScreen extends StatefulWidget {
@@ -31,6 +33,8 @@ class _PoseScreenState extends State<PoseScreen> {
   String? _text;
   var _cameraLensDirection = CameraLensDirection.back;
   final AudioPlayer _audioPlayer = AudioPlayer();
+  final ConfettiController _confettiController =
+      ConfettiController(duration: const Duration(seconds: 3));
 
   @override
   void initState() {
@@ -51,7 +55,8 @@ class _PoseScreenState extends State<PoseScreen> {
       body: BlocProvider(
         create: (_) => PoseBloc(
             poseRepository: PoseRepository(),
-            permissionRepository: PermissionRepository())
+            permissionRepository: PermissionRepository(),
+            storageRepository: StorageRepository())
           ..add(PoseRequestPermissionEvent(poseAction: widget.poseAction)),
         child: BlocBuilder<PoseBloc, PoseState>(
           builder: (context, state) {
@@ -60,6 +65,10 @@ class _PoseScreenState extends State<PoseScreen> {
 
               if (state.didCount) {
                 _audioPlayer.resume();
+
+                if (state.isFinished) {
+                  _confettiController.play();
+                }
               }
             }
             return _poseWidgets(state, context);
@@ -75,26 +84,51 @@ class _PoseScreenState extends State<PoseScreen> {
           : const Center(child: CircularProgressIndicator());
 
   Widget _cameraWidget(PoseState state, BuildContext context) {
-    return Column(
+    return Stack(
       children: [
-        Text(
-          '${state.poseAction?.done}/${state.poseAction?.total}',
-          style: const TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
+        // Camera view and other UI components
+        Column(
+          children: [
+            Text(
+              '${state.poseAction?.done}/${state.poseAction?.total}',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Colors.white,
+              ),
+            ),
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 550,
+                maxWidth: MediaQuery.of(context).size.width,
+              ),
+              child: DetectorView(
+                title: 'Pose Detector',
+                customPaint: _customPaint,
+                text: _text,
+                onImage: (inputImage) => _processImage(inputImage, context),
+                initialCameraLensDirection: _cameraLensDirection,
+                onCameraLensDirectionChanged: (value) =>
+                    _cameraLensDirection = value,
+              ),
+            ),
+          ],
         ),
-        ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: 550,
-            maxWidth: MediaQuery.of(context).size.width,
-          ),
-          child: DetectorView(
-            title: 'Pose Detector',
-            customPaint: _customPaint,
-            text: _text,
-            onImage: (inputImage) => _processImage(inputImage, context),
-            initialCameraLensDirection: _cameraLensDirection,
-            onCameraLensDirectionChanged: (value) =>
-                _cameraLensDirection = value,
+        // Confetti widget on top
+        Align(
+          alignment: Alignment.topCenter,
+          child: ConfettiWidget(
+            confettiController: _confettiController,
+            blastDirectionality: BlastDirectionality.explosive,
+            shouldLoop: false,
+            numberOfParticles: 25,
+            colors: const [
+              Colors.green,
+              Colors.blue,
+              Colors.pink,
+              Colors.orange,
+              Colors.purple,
+            ],
           ),
         ),
       ],
