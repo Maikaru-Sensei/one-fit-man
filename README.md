@@ -1,16 +1,17 @@
-# one_fit_man
+# One Fit Man
+A Flutter app for a self controlling training inspired by Saitama from One Punch Man.
+The app uses the google ml kit library for flutter (https://pub.dev/packages/google_ml_kit) for pose detection
+of the training pose via the camera.
 
-A new Flutter project.
+The camera has to be positioned to capture the whole body with either the front or the back camera.
+For detecting running the app uses GPS.
 
-## Getting Started
+## Poses
+- Squats
+- Push Ups
+- Sit Ups
+- Running
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Screenshots
+<img src="https://github.com/user-attachments/assets/d99cdfa7-c63b-4807-9650-7e2c71ea34e3" alt="black_white" width="300">
+<img src="https://github.com/user-attachments/assets/ee49c2a9-a860-467c-bcb0-38c307d7baaa" alt="black_white" width="300">
